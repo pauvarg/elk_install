@@ -1,0 +1,39 @@
+- name: Install Elastic Search, Kibana and Functionbeat
+  hosts: localhost
+  roles:
+    - role: elastic.elasticsearch
+    - kibana
+    - functionbeat
+  vars:
+    es_version: 7.15.0
+    es_config:
+      cluster.name: elastic.pauvar.com
+      node.name: node1
+      network.host: 172.31.27.49
+      http.port: 9200
+      node.data: true
+      node.master: true
+      discovery.type: single-node
+    es_api_basic_auth_username: elastic
+    es_api_basic_auth_password: XXXXXXX
+    es_api_host: 172.31.27.49
+    kibana_config:
+      version: 7.x
+      config_template: kibana.yml.j2
+      config_file_path: /etc/kibana/kibana.yml
+      server_port: 5601
+      server_host: localhost
+      server_name: kibana
+      server_publicBaseUrl: kibana.pauvar.com
+    functionbeat_config:
+      public_ip: 3.87.167.70
+      config_template: functionbeat.yml.j2
+      config_file_path: /etc/functionbeat/functionbeat.yml
+      aws.deploy_bucket: pauvar-functionbeat-deploy
+      aws.access_key_id: AKXXXX
+      aws.secret_access_key: XXXXXX
+      aws.region: us-east-1
+      cloudwatch_log_groups: 
+        - /aws/ses/delivery_logs
+        - /aws/ses/bounce_logs
+        - /aws/ses/complaint_logs
