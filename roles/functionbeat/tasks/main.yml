@@ -1,0 +1,31 @@
+---
+- name: Download Functionbeat
+  get_url:
+    url: https://artifacts.elastic.co/downloads/beats/functionbeat/functionbeat-7.15.0-linux-x86_64.tar.gz
+    dest: /tmp/functionbeat-7.15.0-linux-x86_64.tar.gz
+
+- name: Create functionbeat directory if it does not exist
+  file:
+    path: /etc/functionbeat/
+    state: directory
+    mode: '0755'
+
+- name: Extract Functionbeat
+  unarchive:
+    src: /tmp/functionbeat-7.15.0-linux-x86_64.tar.gz
+    dest: /etc/functionbeat/
+    extra_opts: [--strip-components=1]
+
+- name: Add Functionbeat configuration
+  template:
+    src: "{{ functionbeat_config['config_template'] }}"
+    dest: "{{ functionbeat_config['config_file_path'] }}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Setup Functionbeat 
+  command: chdir=/etc/functionbeat/ ./functionbeat setup -e
+
+- name: Deploy Functionbeat cloudwatch configuration
+  command: chdir=/etc/functionbeat/ ./functionbeat -v -e -d "*" deploy cloudwatch
