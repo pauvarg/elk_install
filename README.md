@@ -4,4 +4,4 @@ Prerequisites:
 
 ```ansible-galaxy install elastic.elasticsearch,v7.15.0```
 
-1. Collect and set variable values defined in install_elk.yml.
+2. Collect and set variable values defined in install_elk.yml.
